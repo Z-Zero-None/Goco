@@ -107,7 +107,6 @@ func (l *Logger) WithCallersFrames() *Logger {
 	//函数把当前go程调用栈上的调用栈标识符填入切片pcs中，返回写入到pc中的项数。
 	//实参skip为开始在pcs中记录之前所要跳过的栈帧数，0表示Callers自身的调用栈，1表示Callers所在的调用栈。返回写入p的项数。
 	depth := runtime.Callers(minCallerDepth, pcs)
-
 	frames := runtime.CallersFrames(pcs[:depth])
 	for frame, more := frames.Next(); more; frame, more = frames.Next() {
 		s := fmt.Sprintf("%s:%d %s", frame.File, frame.Line, frame.Function)

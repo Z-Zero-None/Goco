@@ -1,0 +1,28 @@
+Server:
+  RunMode: debug    #运行模式
+  HttpPort: 8888    #端口端口
+  ReadTimeout: 60   #读写控制时间 秒位单位
+  WriteTimeout: 60
+App:
+  SessionSecret: dafasdf  #密钥自定义
+  DefaultPageSize: 10      #默认页面大小
+  MaxPageSize: 100      #默认最大分页
+  LogSavePath: storage/logs     #日志存储
+  LogFileName: goco_        #日志前缀名
+  LogFileExt: .log      #日志后缀名
+DataBase:
+  DBType: mysql     #数据库类型
+  Username: root    #账号密码
+  Password: 123456
+  Host: 127.0.0.1:3306
+  DBName: goco  #数据库名字
+  TablePrefix: goco_    
+  Charset: utf8mb4
+  ParseTime: True
+  MaxIdleConnNum: 10
+  MaxOpenConnNum: 30
+Redis:
+  Addr: 127.0.0.1:6379
+  Password:
+  DB:
+  IdleTimeout: 300

@@ -59,7 +59,8 @@ func initDBEngine() (err error) {
 
 //设置全局日志对象
 func initLogger() error {
-	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt
+	format := time.Now().Format("20060102")
+	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName +format+ global.AppSetting.LogFileExt
 	global.Logger = logger.NewLogger(&lumberjack.Logger{
 		Filename:  fileName,
 		MaxSize:   600,  //日志文件最大存储MB

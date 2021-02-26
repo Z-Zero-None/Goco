@@ -19,6 +19,9 @@ func init(){
 	log.Println("你的服务配置已初始化完成！")
 }
 
+// @title go开发脚手架
+// @version 1.0
+// @description 如何使用swagger生成api文档
 func main(){
 	gin.SetMode(global.ServerSetting.RunMode)
 	router:=routers.NewRouter()
