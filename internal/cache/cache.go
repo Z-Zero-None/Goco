@@ -8,6 +8,7 @@ import (
 	"Goco/pkg/setting"
 )
 
+var RC *redis.Client
 func NewRedisClient(s *setting.RedisSetting)( *redis.Client,error){
 	options:=&redis.Options{
 		Addr: s.Address,
@@ -21,5 +22,6 @@ func NewRedisClient(s *setting.RedisSetting)( *redis.Client,error){
 		fmt.Println("连接redis失败")
 		return nil,err
 	}
+	RC=client
 	return client,nil
 }

@@ -16,7 +16,7 @@ DataBase:
   Password: 123456
   Host: 127.0.0.1:3306
   DBName: goco  #数据库名字
-  TablePrefix: goco_    
+  TablePrefix: goco_
   Charset: utf8mb4
   ParseTime: True
   MaxIdleConnNum: 10
