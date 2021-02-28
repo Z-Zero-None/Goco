@@ -7,44 +7,57 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"Goco/internal/model"
+	"Goco/internal/request"
 	"Goco/internal/serializer"
 )
 
-type UserLogin struct {
-	UserName string `form:"username" json:"username" binding:"required,min=5,max=20"`
-	Password string `form:"password" json:"password" binding:"required,min=6,max=20"`
-}
-func NewUserLogin() *UserLogin {
-	return &UserLogin{}
-}
 // setSession 设置session
-func (service *UserLogin) setSession(c *gin.Context, user *model.User) {
+func (service *Service) setSession(c *gin.Context, user *model.User) {
 	s := sessions.Default(c)
 	s.Clear()
 	s.Set("user_id", user.ID)
 	s.Save()
 }
 // Login 用户登录函数
-func (service *UserLogin) Login(c *gin.Context)(data serializer.User, err error){
+func (service *Service) Login(c *gin.Context,request *request.UserLoginRequest)(data serializer.User, err error){
 	user:=model.NewUser()
-	if err = model.DB.Where("user_name = ?", service.UserName).First(&user).Error; err != nil {
+	if exist :=user.CheckExist(service.engine,request.UserName) ;!exist {
 		return data,errors.New("账号或密码错误")
 	}
-	if user.CheckPassword(service.Password) == false {
+	if user.CheckPassword(request.Password) == false {
 		return data,errors.New("账号或密码错误")
 	}
 	service.setSession(c, user)
-	data = serializer.BuildUser(*user)
+	data = serializer.BuildUser(user)
 	return data,nil
 }
 
-type UserRegister struct {
-	UserName        string `form:"username" json:"username" binding:"required,min=5,max=20"`
-	Password        string `form:"password" json:"password" binding:"required,min=8,max=20"`
-	PasswordConfirm string `form:"confirm" json:"confirm" binding:"required,min=8,max=20"`
+func (service *Service) Register(request *request.UserRegisterRequest)(data serializer.User,err error) {
+	user := model.NewUser()
+	//校验两次密码是否正确
+	if request.PasswordConfirm != request.Password {
+		return data,errors.New("两次输入的密码不相同")
+	}
+	if exist := user.CheckExist(service.engine, request.UserName);exist{
+		return data,errors.New("账号已存在")
+	}
+	user.UserName=request.UserName
+	// 加密密码
+	if err := user.SetPassword(request.Password); err != nil {
+		return data,err
+	}
+	// 创建用户
+	if err := user.Create(service.engine); err != nil {
+		return data,err
+	}
+	data=serializer.BuildUser(user)
+	return data,nil
 }
-type UserChangePWD struct {
-	OldPwd string `json:"old_pwd"`
-	NewPwd string `json:"new_pwd"`
-	ComPwd string `json:"com_pwd"`
+func (service *Service)GetUser(id interface{})(data serializer.User,err error){
+	user := model.NewUser()
+	err = user.Get(service.engine, id)
+	if err!=nil{
+		return data,err
+	}
+	return serializer.BuildUser(user),nil
 }

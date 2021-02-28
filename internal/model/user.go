@@ -38,21 +38,28 @@ func (u *User) CheckPassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	return err == nil
 }
+//检测账号是否存在
+func (u *User)CheckExist(db *gorm.DB,username string)bool{
+	err:=db.Where("user_name = ?", username).First(&u).Error
+	if err!=nil{
+		return false
+	}
+	return true
+}
 //增删改查列表
-func (u *User) Get(id string) error {
-	return DB.Find(&u, id).Error
+func (u *User) Get(db *gorm.DB,id interface{}) error {
+	return db.Find(&u, id).Error
 }
-func (u *User) Create() error {
-	return DB.Create(&u).Error
+func (u *User) Create(db *gorm.DB) error {
+	return db.Create(&u).Error
 }
-func (u *User) Update() error {
-	return DB.Save(&u).Error
+func (u *User) Update(db *gorm.DB) error {
+	return db.Save(&u).Error
 }
-func (u *User) Delete(id string) error {
-	return DB.Delete(&u, id).Error
+func (u *User) Delete(db *gorm.DB,id string) error {
+	return db.Delete(&u, id).Error
 }
-func (u *User) List(offset, size int) (list []*User, err error) {
-	db:=DB
+func (u *User) List(db *gorm.DB,offset, size int) (list []*User, err error) {
 	if offset >= 0 && size > 0 {
 		db = db.Offset(offset).Limit(size)
 	}
@@ -61,8 +68,8 @@ func (u *User) List(offset, size int) (list []*User, err error) {
 	}
 	return list, nil
 }
-func (u *User) Count() (count int, err error) {
-	err = DB.Model(&u).Count(&count).Error
+func (u *User) Count(db *gorm.DB,) (count int, err error) {
+	err = db.Model(&u).Count(&count).Error
 	if err != nil {
 		return 0, err
 	}
