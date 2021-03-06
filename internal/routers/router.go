@@ -34,6 +34,7 @@ func NewRouter()*gin.Engine{
 		v.Use(middleware.AuthRequired())
 		{
 			v.GET("user/me", v1.UserMe)
+			v.DELETE("user/logout", v1.UserLogout)
 		}
 	}
 	global.Logger.Info(context.Background(),"服务成功启动查看日志")

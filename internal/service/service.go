@@ -4,18 +4,18 @@ import (
 	"context"
 
 	otgorm "github.com/eddycjy/opentracing-gorm"
-	"github.com/jinzhu/gorm"
 
 	"Goco/global"
+	"Goco/internal/dao"
 )
 
 type Service struct {
 	ctx context.Context
-	engine *gorm.DB
+	dao *dao.Dao
 }
 
 func NewService(ctx context.Context) Service {
 	svc := Service{ctx: ctx}
-	svc.engine=otgorm.WithContext(svc.ctx, global.DBEngine)
+	svc.dao = dao.NewDao(otgorm.WithContext(svc.ctx, global.DBEngine))
 	return svc
 }
