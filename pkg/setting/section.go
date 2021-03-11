@@ -36,3 +36,7 @@ type RedisSetting struct {
 	DB          int           //选择数据库
 	IdleTimeout time.Duration //超时时间
 }
+type TracerSetting struct {
+	Name string //服务名称
+	Host string //ip:port
+}

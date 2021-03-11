@@ -9,4 +9,5 @@ var (
 	AppSetting      *setting.AppSetting
 	DataBaseSetting *setting.DataBaseSetting
 	RedisSetting    *setting.RedisSetting
+	TracerSetting    *setting.TracerSetting
 )

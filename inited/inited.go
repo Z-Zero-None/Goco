@@ -12,6 +12,7 @@ import (
 	"Goco/internal/model"
 	"Goco/pkg/logger"
 	"Goco/pkg/setting"
+	"Goco/pkg/tracer"
 )
 
 func InitGlobal() (err error) {
@@ -35,8 +36,23 @@ func InitGlobal() (err error) {
 		fmt.Println("配置全局redis对象失败")
 		return err
 	}
+	err = initTracer()
+	if err != nil {
+		fmt.Println("配置全局tracer对象失败")
+		return err
+	}
 	return nil
 }
+//设置全局Tracer对象
+func initTracer() (err error) {
+	jaegerTracer, _, err := tracer.NewJaegerTracer(global.TracerSetting.Name, global.TracerSetting.Host)
+	if err != nil {
+		return err
+	}
+	global.Tracer = jaegerTracer
+	return nil
+}
+
 
 //设置全局redis对象
 func initRedis() (err error) {
@@ -97,6 +113,11 @@ func initSetting() (err error) {
 		fmt.Println("绑定RedisSetting数据失败")
 		return err
 	}
+	err = setting.ReadSection("Tracer", &global.TracerSetting)
+	if err != nil {
+		fmt.Println("绑定TracerSetting数据失败")
+		return err
+	}
 
 	global.ServerSetting.WriteTimeout *= time.Second
 	global.ServerSetting.ReadTimeout *= time.Second
@@ -106,5 +127,6 @@ func initSetting() (err error) {
 	log.Printf("===全局变量AppSetting:\n%#v\n", global.AppSetting)
 	log.Printf("===全局变量DataBaseSetting:\n%#v\n", global.DataBaseSetting)
 	log.Printf("===全局变量RedisSetting:\n%#v\n", global.RedisSetting)
+	log.Printf("===全局变量TracerSetting):\n%#v\n", global.TracerSetting)
 	return nil
 }

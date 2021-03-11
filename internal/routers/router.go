@@ -14,13 +14,19 @@ import (
 )
 
 func NewRouter()*gin.Engine{
-	r:=gin.Default()
+	r:=gin.New()
+	//启动双写日志
+	r.Use(middleware.AccessLog())
+	//默认的报错处理
+	r.Use(gin.Recovery())
 	//启动Session用于存储信息
 	r.Use(middleware.Session(global.AppSetting.SessionSecret))
 	//语言中间件
 	r.Use(middleware.Translations())
 	//获取当前用户
 	r.Use(middleware.CurrentUser())
+	//启动链路追踪
+	r.Use(middleware.Tracing())
 	//启动swagger查看api文档
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	//测试使用ping接口
