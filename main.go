@@ -11,7 +11,7 @@ import (
 	"Goco/internal/routers"
 )
 
-func init(){
+func init() {
 	err := inited.InitGlobal()
 	if err != nil {
 		log.Fatalf("全局变量配置失败")
@@ -22,10 +22,10 @@ func init(){
 // @title go开发脚手架
 // @version 1.0
 // @description 如何使用swagger生成api文档
-func main(){
+func main() {
 	gin.SetMode(global.ServerSetting.RunMode)
-	router:=routers.NewRouter()
-	s:=&http.Server{
+	router := routers.NewRouter()
+	s := &http.Server{
 		Addr:           ":" + global.ServerSetting.HttpPort,
 		Handler:        router,
 		ReadTimeout:    global.ServerSetting.ReadTimeout,

@@ -13,6 +13,7 @@ import (
 	"Goco/pkg/logger"
 	"Goco/pkg/setting"
 	"Goco/pkg/tracer"
+	"Goco/scripts/tasks"
 )
 
 func InitGlobal() (err error) {
@@ -41,9 +42,13 @@ func InitGlobal() (err error) {
 		fmt.Println("配置全局tracer对象失败")
 		return err
 	}
+
+	//启动定时任务
+	tasks.CronJob()
 	return nil
 }
-//设置全局Tracer对象
+
+// 设置全局Tracer对象
 func initTracer() (err error) {
 	jaegerTracer, _, err := tracer.NewJaegerTracer(global.TracerSetting.Name, global.TracerSetting.Host)
 	if err != nil {
@@ -53,8 +58,7 @@ func initTracer() (err error) {
 	return nil
 }
 
-
-//设置全局redis对象
+// 设置全局redis对象
 func initRedis() (err error) {
 	global.RedisClient, err = cache.NewRedisClient(global.RedisSetting)
 	if err != nil {
@@ -63,7 +67,7 @@ func initRedis() (err error) {
 	return nil
 }
 
-//设置全局DB对象
+// 设置全局DB对象
 func initDBEngine() (err error) {
 	global.DBEngine, err = model.NewDBEngine(global.DataBaseSetting)
 	if err != nil {
@@ -73,10 +77,10 @@ func initDBEngine() (err error) {
 	return nil
 }
 
-//设置全局日志对象
+// 设置全局日志对象
 func initLogger() error {
 	format := time.Now().Format("20060102")
-	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName +format+ global.AppSetting.LogFileExt
+	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + format + global.AppSetting.LogFileExt
 	global.Logger = logger.NewLogger(&lumberjack.Logger{
 		Filename:  fileName,
 		MaxSize:   600,  //日志文件最大存储MB
@@ -86,7 +90,7 @@ func initLogger() error {
 	return nil
 }
 
-//设置全局配置
+// 设置全局配置
 func initSetting() (err error) {
 	setting, err := setting.NewSetting("configs/")
 	if err != nil {

@@ -17,9 +17,9 @@ func CurrentUser() gin.HandlerFunc {
 		//从cookie获取user_id	查看是否登录
 		uid := session.Get("user_id")
 
-		if uid!=nil {
+		if uid != nil {
 			//获取user信息
-			service:= service.NewService(c.Request.Context())
+			service := service.NewService(c.Request.Context())
 			user, err := service.GetUser(uid)
 			//存在即放入设置全局user
 			if err == nil {
@@ -29,6 +29,7 @@ func CurrentUser() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
 // AuthRequired 需要登录
 func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -38,9 +39,8 @@ func AuthRequired() gin.HandlerFunc {
 				return
 			}
 		}
-		response:=app.NewResponse(c)
+		response := app.NewResponse(c)
 		response.ToErrorResponse(errcode.ErrUnLogin)
 		c.Abort()
 	}
 }
-
